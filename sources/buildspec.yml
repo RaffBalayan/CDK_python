@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+
+  install:
+     commands:
+       - echo "Start install ..."
+       - pip install awscli
+  pre_build:
+     commands:
+       - export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+  build:
+    commands:
+      - echo "Start post build ..."
+      - aws s3 sync WEB s3://$ACCOUNT_ID-dev-weight-calculator --delete
+artifacts:
+  exclude-paths:
+    - .git
+    - .gitignore
+  files:
+    - '**/*'
